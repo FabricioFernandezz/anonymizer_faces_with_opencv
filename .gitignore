@@ -1,4 +1,5 @@
 venv/
 /resources/output/
 /resources/images/test_image.jpg
+/resources/video/test_video.mp4
 
