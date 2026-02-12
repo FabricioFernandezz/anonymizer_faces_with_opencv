@@ -26,14 +26,14 @@ def process_img(img, face_detection):
             img[y1:y1+h,x1:x1+h] = cv.blur(img[y1:y1+h,x1:x1+h],(30,30))
             # anteriormente yo lo hice sin poner img[y1:y1+h,x1:x1+h] =..., pero lo que pasa es que solo muestra las seccion donde estaria  (anets yo puse img=...) la imagen, lo que nosostros queremos es toda a imagen y solo una seccion borrosa pero ver toda la imagen, no solo ver lo borroso
     elif out.detections is None:
-        print("no se detecto ninguna cara")
+        print("No se detecto ninguna cara")
 
     return img
 
 arg = argparse.ArgumentParser() #creamos un objeto de la clase ArgumentParser, esta clase nos permite crear argumentos para nuestro programa, es decir, podemos pasarle argumentos desde la linea de comandos para que nuestro programa haga cosas diferentes dependiendo de los argumentos que le pasemos
 
-arg.add_argument("--mode", default="video") # agregamos un argumento llamado mode, este argumento nos va a permitir elegir entre procesar una imagen o un video, por defecto se va a procesar una imagen, pero si queremos procesar un video, podemos pasarle el argumento --mode video
-arg.add_argument("--filePath", default="./resources/video/test_video.mp4") # agregamos un argumento llamado filePath, este argumento nos va a permitir elegir la ruta del archivo que queremos procesar, por defecto se va a procesar una imagen que se encuentra en la carpeta resources/images/test_image.jpg, pero si queremos procesar otro archivo, podemos pasarle el argumento --filePath seguido de la ruta del archivo que queremos procesar
+arg.add_argument("--mode", default="webcam") # agregamos un argumento llamado mode, este argumento nos va a permitir elegir entre procesar una imagen o un video, por defecto se va a procesar una imagen, pero si queremos procesar un video, podemos pasarle el argumento --mode video
+arg.add_argument("--filePath", default=None) # agregamos un argumento llamado filePath, este argumento nos va a permitir elegir la ruta del archivo que queremos procesar, por defecto se va a procesar una imagen que se encuentra en la carpeta resources/images/test_image.jpg, pero si queremos procesar otro archivo, podemos pasarle el argumento --filePath seguido de la ruta del archivo que queremos procesar
 
 output_dir = "./resources/output"
 
@@ -68,3 +68,16 @@ with mp_face_detection.FaceDetection(0,0.5) as face_detection:
 
         capture.release()
         output_video.release()
+
+    elif arg.parse_args().mode == "webcam":
+        capture = cv.VideoCapture(0)
+
+        isTrue,frame = capture.read()
+
+        while isTrue:
+            frame = process_img(frame, face_detection)
+            cv.imshow("Anom",frame)
+            cv.waitKey(25)
+            isTrue,frame = capture.read()
+            
+        capture.release()
